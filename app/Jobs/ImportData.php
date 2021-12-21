@@ -38,10 +38,16 @@ class ImportData implements ShouldQueue
         // Get age on profile
         // DateFormatter is a custom class format date for DB and calculate age
         $age = DateFormatter::getAge($this->record['date_of_birth']);
+        
+        /**
+         * Option to include test for three identical digits in credit card
+         * if($age > 17 && $age < 66 && CardDigitChecker::identicalDigits($this->record['credit_card']['number'])) {
+         */
 
-        // Check that age is between 18 and 65 
+        // Check that age is between 18 and 65
         if ($age > 17 && $age < 66) {
-            // Create instance of a profile
+
+            // Create instance of the profile model
             $profile = new Profile;
             $profile->name = $this->record['name'];
             $profile->address = $this->record['address'];
@@ -53,7 +59,7 @@ class ImportData implements ShouldQueue
             $profile->checked = $this->record['checked'] ? 1 : 0;
             $profile->save();
     
-            // Add credit card record for each user
+            // Add credit card record for the profile
             $profile->credit_card()->create([
                 'name' => $this->record['credit_card']['name'],
                 'type' => $this->record['credit_card']['type'],

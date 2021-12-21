@@ -9,6 +9,9 @@ class UploadRepository
 {
     public $file, $profiles;
 
+    /**
+     * Receives uploaded file
+     */
     public function getFile($file)
     {
         $this->file = $file;
@@ -16,6 +19,9 @@ class UploadRepository
         $this->typeOfFile();
     }
 
+    /**
+     * Checks file MIME type to determine which method to call
+     */
     public function typeOfFile()
     {
         $fileType = $this->file->getClientMimeType();
@@ -38,6 +44,9 @@ class UploadRepository
         }
     }
 
+    /**
+     * Parse JSON file
+     */
     public function parseJson()
     {
         // Parse JSON and extract records
@@ -45,18 +54,27 @@ class UploadRepository
         $this->uploadData();
     }
 
+    /**
+     * Parse CSV file
+     */
     public function parseCsv()
     {
         // Parse CSV and extract records
         return redirect()->back()->withError('CSV not supported');
     }
 
+    /**
+     * Parse XML file
+     */
     public function parseXml()
     {
         // Parse XML and extract records
         return redirect()->back()->withError('XML not supported');
     }
 
+    /**
+     * Process parsed file
+     */
     public function uploadData()
     {
         try {
@@ -74,6 +92,9 @@ class UploadRepository
         }
     }
 
+    /**
+     * Return to initial view with error message
+     */
     public function returnBackNoSupport()
     {
         return redirect()->back()->withError('File type not supported');
