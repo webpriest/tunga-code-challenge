@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use Carbon\Carbon;
 use App\Models\Profile;
+use App\Utils\DateFormatter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -34,10 +35,9 @@ class ImportData implements ShouldQueue
      */
     public function handle()
     {
-        // Format all dates of birth to Y-m-d format
-        $formatted_dob = strftime("%Y-%m-%d", strtotime($this->record['date_of_birth']));
         // Get age on profile
-        $age = Carbon::parse($formatted_dob)->diff(Carbon::now())->y;
+        // DateFormatter is a custom class format date for DB and calculate age
+        $age = DateFormatter::getAge($this->record['date_of_birth']);
 
         // Check that age is between 18 and 65 
         if ($age > 17 && $age < 66) {
@@ -49,7 +49,7 @@ class ImportData implements ShouldQueue
             $profile->email = $this->record['email'];
             $profile->interest = $this->record['interest'];
             $profile->account = $this->record['account'];
-            $profile->date_of_birth = $formatted_dob;
+            $profile->date_of_birth = DateFormatter::dbFormat($this->record['date_of_birth']);
             $profile->checked = $this->record['checked'] ? 1 : 0;
             $profile->save();
     
