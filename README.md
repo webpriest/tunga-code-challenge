@@ -4,7 +4,7 @@ A program to import data from a large file into a database using PHP in Laravel.
 
 Requirements:
 
-- Clone the repo at [https://github.com/webpriest/tunga-challenge.git](https://github.com/webpriest/tunga-code-challenge.git).
+- Clone the repo at [https://github.com/webpriest/tunga-code-challenge.git](https://github.com/webpriest/tunga-code-challenge.git).
 - Run `composer install` to pull dependencies.
 - Run `npm install && npm run dev` for the UI package.
 - Change **.env.example** to **.env** and set **DB_DATABASE=tunga_challenge**. 
