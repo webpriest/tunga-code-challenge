@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\ImportData;
 use Illuminate\Http\Request;
-use JsonMachine\JsonMachine;
+use App\Repositories\UploadRepository;
 
 class ProfileController extends Controller
 {
@@ -18,29 +17,25 @@ class ProfileController extends Controller
         return view('index');
     }
 
-    public function store(Request $request)
+    /**
+     * Process uploaded file
+     * 
+     * @return void
+     */
+    public function store(Request $request, UploadRepository $uploads)
     {
         if($request->hasFile('data_file')) {
-            $profiles = JsonMachine::fromFile($request->file('data_file'));
-                
-            try {
-                // Loop through parsed records
-                foreach($profiles as $record) {
-                    // JSON encode every record and format with white space and line returns
-                    $raw = json_encode($record, JSON_PRETTY_PRINT);
-                    // JSON decode in associative array for PHP
-                    $record = json_decode($raw, true);
-                    // Dispatch job for queues
-                    // Job file located at app > Jobs > ImportData.php
-                    dispatch(new ImportData($record));
-                }
+            $file = $request->file('data_file');
+            if($file) {
+                $uploads->getFile($request->file('data_file'));
+                return redirect()->back();
             }
-            catch(Throwable $e) {
-                
-                report($e);
-
-                return false;
+            else {
+                return redirect()->back()->withError("File could not be uploaded.");
             }
+        }
+        else {
+            return redirect()->back()->withError("Please choose a file.");
         }
     }
 }
